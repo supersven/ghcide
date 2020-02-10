@@ -19,6 +19,7 @@ import Development.IDE.Core.Shake
 import Development.IDE.GHC.Error
 import Development.IDE.LSP.Server
 import Development.IDE.Types.Location
+import Development.IDE.Types.Logger
 import Development.IDE.Types.Options
 import qualified Data.HashMap.Strict as Map
 import qualified Language.Haskell.LSP.Core as LSP
@@ -49,9 +50,9 @@ codeAction
     -> Range
     -> CodeActionContext
     -> IO (Either ResponseError [CAResult])
-codeAction lsp state (TextDocumentIdentifier uri) _range CodeActionContext{_diagnostics=List xs} = do
+codeAction lsp state (TextDocumentIdentifier uri) _range arg@CodeActionContext{_diagnostics=List xs} = do
     -- disable logging as its quite verbose
-    -- logInfo (ideLogger ide) $ T.pack $ "Code action req: " ++ show arg
+    logInfo (ideLogger state) $ T.pack $ "Code action req: " ++ show arg
     contents <- LSP.getVirtualFileFunc lsp $ toNormalizedUri uri
     let text = Rope.toText . (_text :: VirtualFile -> Rope.Rope) <$> contents
     (ideOptions, parsedModule) <- runAction state $

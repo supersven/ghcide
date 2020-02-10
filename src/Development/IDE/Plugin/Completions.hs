@@ -83,6 +83,7 @@ getCompletionsLSP lsp ide
       _ -> return (Completions $ List [])
 
 setHandlersCompletion :: PartialHandlers
-setHandlersCompletion = PartialHandlers $ \WithMessage{..} x -> return x{
-    LSP.completionHandler = withResponse RspCompletion getCompletionsLSP
-    }
+setHandlersCompletion = PartialHandlers $ \WithMessage{..} x -> return x
+    -- {
+    -- LSP.completionHandler = withResponse RspCompletion getCompletionsLSP
+    -- }

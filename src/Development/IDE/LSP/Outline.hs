@@ -20,6 +20,7 @@ import qualified Data.Text                     as T
 import           Development.IDE.Core.Rules
 import           Development.IDE.Core.Shake
 import           Development.IDE.GHC.Compat
+import           Development.IDE.Types.Logger
 import           Development.IDE.GHC.Error      ( srcSpanToRange )
 import           Development.IDE.LSP.Server
 import           Development.IDE.Types.Location
@@ -30,14 +31,15 @@ import           Outputable                     ( Outputable
 
 setHandlersOutline :: PartialHandlers
 setHandlersOutline = PartialHandlers $ \WithMessage {..} x -> return x
-  { LSP.documentSymbolHandler = withResponse RspDocumentSymbols moduleOutline
-  }
+  -- { LSP.documentSymbolHandler = withResponse RspDocumentSymbols moduleOutline
+  -- }
 
 moduleOutline
   :: LSP.LspFuncs () -> IdeState -> DocumentSymbolParams -> IO (Either ResponseError DSResult)
-moduleOutline _lsp ideState DocumentSymbolParams { _textDocument = TextDocumentIdentifier uri }
+moduleOutline _lsp ideState arg@DocumentSymbolParams { _textDocument = TextDocumentIdentifier uri }
   = case uriToFilePath uri of
     Just (toNormalizedFilePath -> fp) -> do
+      logInfo (ideLogger ideState) $ T.pack $ "Document symbols req: " ++ show arg
       mb_decls <- runAction ideState $ use GetParsedModule fp
       pure $ Right $ case mb_decls of
         Nothing -> DSDocumentSymbols (List [])
