@@ -42,6 +42,11 @@ import FieldLabel
 import qualified GHC
 import GHC hiding (ClassOpSig, DerivD, ForD, IEThingAll, IEThingWith, InstD, TyClD, ValD, ModLocation)
 
+#if MIN_GHC_API_VERSION(8,11,0)
+import GHC.Iface.Ext.Types
+import GHC.Iface.Ext.Binary
+import GHC.Iface.Ext.Ast
+#else
 #if MIN_GHC_API_VERSION(8,8,0)
 import HieAst
 import HieBin
@@ -74,6 +79,7 @@ ml_hie_file _ = ""
 
 data HieFile = HieFile {hie_module :: (), hie_exports :: [AvailInfo]}
 data HieFileResult = HieFileResult { hie_file_result :: HieFile }
+#endif
 #endif
 
 #if !MIN_GHC_API_VERSION(8,6,0)

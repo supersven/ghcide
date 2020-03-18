@@ -1,3 +1,6 @@
+{-# LANGUAGE CPP #-}
+#include "ghc-api-version.h"
+
 module Development.IDE.Plugin.CodeAction.Rules
   ( rulePackageExports
   )
@@ -17,7 +20,11 @@ import           HscTypes                       ( IfaceExport
                                                 , hsc_dflags
                                                 , mi_exports
                                                 )
+#if MIN_GHC_API_VERSION(8,11,0)
+import           GHC.Iface.Load
+#else
 import           LoadIface
+#endif
 import           Maybes
 import           Module                         ( Module(..)
                                                 , ModuleName

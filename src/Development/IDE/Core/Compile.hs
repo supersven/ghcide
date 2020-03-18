@@ -49,11 +49,20 @@ import           GhcMonad
 import           GhcPlugins                     as GHC hiding (fst3, (<>))
 import qualified HeaderInfo                     as Hdr
 import           HscMain                        (hscInteractive, hscSimplify)
+#if MIN_GHC_API_VERSION(8,11,0)
+import           GHC.Iface.Utils
+#else
 import           MkIface
+#endif
 import           NameCache
 import           StringBuffer                   as SB
 import           TcRnMonad (tcg_th_coreplugins)
+
+#if MIN_GHC_API_VERSION(8,11,0)
+import           GHC.Iface.Tidy
+#else
 import           TidyPgm
+#endif
 
 import Control.Monad.Extra
 import Control.Monad.Except
